@@ -37,3 +37,6 @@
 *.png
 *.dot
 *.docx
+
+# Diretories
+/output
