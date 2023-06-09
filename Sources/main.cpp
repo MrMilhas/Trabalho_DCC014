@@ -11,8 +11,12 @@
 #include <utility>
 #include <vector>
 
+#include "../Headers/game.h"
+#include "./game.cpp"
+
 using namespace std;
 
 int main () {
-    return 0;
+    Game *puzzle = new Game(4);
+    puzzle->print_board();
 }
