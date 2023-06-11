@@ -5,16 +5,12 @@
 using namespace std;
 
 //? Constructor and Destructor--------------------------------
-Game::Game(int n_pieces){
-    this->n_pieces = n_pieces;
+Game::Game(std::istream &input){
+    input >> this->n_pieces;
     this->size_board = (2*n_pieces) + 1;
     board = new char[0];
     for (int i=0; i<this->size_board; i++){
-        if(i<n_pieces){board[i] = WHITE;}
-        else{
-            if(i == n_pieces){board[i] = '-';}
-            else{board[i] = BLACK;}
-        }
+        input >> board[i];
     }
     this->count_white = n_pieces;
     this->count_move = 0;
