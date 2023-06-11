@@ -17,6 +17,20 @@
 using namespace std;
 
 int main () {
-    Game *puzzle = new Game(4);
-    puzzle->print_board();
+    ifstream arq;
+    arq.open("input.txt");
+
+    if(!arq){
+        cout << "Não foi possível ler o arquivo" << endl;
+    }
+    else{
+        int n;
+        arq >> n;
+        cout << n << endl; 
+    }
+
+    //Game *puzzle = new Game(4);
+    //puzzle->print_board();
+
+    return 0;
 }
