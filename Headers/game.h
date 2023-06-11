@@ -18,7 +18,7 @@ class Game {
         int count_move;   // Contador de movimentos;
 
         //? Constructor and Destructor ---------------------------------
-        Game(int n_pieces);
+        Game(std::istream &input);
         ~Game();
 
         //? Methods ----------------------------------------------------
