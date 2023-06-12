@@ -2,6 +2,7 @@
 #define GAME_H
 
 #include <iostream>
+#include <list>
 
 #define BLACK 'B' // Fichas pretas;
 #define WHITE 'W' // Fichas brancas;
@@ -14,7 +15,7 @@ class Game {
 
         char *board;      // Tabuleiro;
 
-        int count_white;  // Qauntidade de peças brancas fora do lugar;
+        int count_white;  // Qauntidade de peças brancas fora do lugar (à esquerda);
         int count_move;   // Contador de movimentos;
 
         //? Constructor and Destructor ---------------------------------
@@ -30,6 +31,10 @@ class Game {
 
         int calc_estimate_cost();
         int calc_objective();
+
+        Game *build_child();
+
+        list<tuple<int, int>> possible_moves(list<Game *> *three);
 };
 
 #endif
