@@ -31,7 +31,7 @@ int main () {
     std::chrono::time_point<std::chrono::system_clock> init, final;
     vector<Game *> solution_three;
     bool solution = false;
-    Game *puzzle;
+    Game *puzzle = new Game();
 
 
     if(!arq){
@@ -112,6 +112,12 @@ int main () {
                     cout << "-------------------------------" << endl;
                     continue;
             }
+
+            cout << "Solução:\n";
+            for(Game* game : solution_three){
+                game->print_board();
+            }
+            cout << endl;
         }
 
     }
