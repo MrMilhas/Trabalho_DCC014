@@ -5,6 +5,8 @@
 #include <fstream>
 #include <list>
 #include <tuple>
+#include <vector>
+#include <utility>
 #include "game.h"
 
 using namespace std;
@@ -17,24 +19,28 @@ using namespace std;
  * @return true   Retorna verdadeiro se encontra solução;
  * @return false  Retorna falso se não encontra solução;
  */
-bool backtracking (Game *puzzle, list<Game *> *three){
-    three->push_back(puzzle);               // Adicionando tabuleiro inicial no nó da árvore;
+bool backtracking (Game *puzzle, vector<Game *> &three){
+    three[0] = puzzle;               // Adicionando tabuleiro inicial no nó da árvore;
+    cout << "000000000000000000000000000000000000000000" << endl;
     if(puzzle->verify_win()){return true;}  // Verificando condição de vitória inicial;
 
     Game *child = puzzle->build_child();     // Criando nó filho;
-    list<tuple<int, int>> possible_moves = child->possible_moves(three);
+    std::vector<std::pair<int, int>> possible_moves = child->possible_moves(three);
 
     for(auto currentTuple : possible_moves){
         child->move(get<0>(currentTuple), get<1>(currentTuple));
+        cout << "Avança: ";
+        child->print_board();
 
         if(backtracking(child, three)){
             return true;
         }
 
+        cout << "Retorna: ";
         child->move(get<1>(currentTuple), get<0>(currentTuple));
     }
 
-    three->pop_back();
+    three.pop_back();
     delete child;
 
     return false;
