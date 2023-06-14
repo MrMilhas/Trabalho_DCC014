@@ -5,6 +5,7 @@
 Matrícula       Nome                                E-mail
 ```
 202065020AC      Daniel Muller Rezende               daniel.rezende@estudante.ufjf.br
+202035006        Nilton Rego Teixeira                nilton.teixeira@estudante.ufjf.br
 ```
 ## Descrição:
 Este trabalho consiste em implementar os principais algoritmos de busca em inteligência artificial para o jogo das fichas.
