@@ -9,10 +9,12 @@
 #include <stdlib.h>
 #include <string>
 #include <tuple>
+#include <list>
 #include <utility>
 #include <vector>
 
 #include "../Headers/game.h"
+#include "../Headers/algorithms.h"
 #include "./game.cpp"
 
 using namespace std;
@@ -25,22 +27,29 @@ int main () {
     ifstream arq;
     arq.open("../input.txt");
 
+    int option = 9;
+    std::chrono::time_point<std::chrono::system_clock> init, final;
+    vector<Game *> solution_three;
+    bool solution = false;
+    Game *puzzle;
+
+
     if(!arq){
         cout << " => Nao foi possivel ler o arquivo." << endl;
         cout << "====================================================================" << endl;
+        delete puzzle;
         return -1;
     }
     else{
         cout << "                   ...arquivo lido com sucesso...                   " << endl;
         cout << endl;
-        Game *puzzle = new Game(arq);
+        puzzle->build_board(arq);
         cout << " => Tabuleiro Inicial: ";
         puzzle->print_board();
+        cout << " => Tabuleiro Solucao: ";
+        puzzle->print_solution();
         cout << endl;
         cout << "------------------------------------------" << endl;
-
-        int option = 9000;
-        std::chrono::time_point<std::chrono::system_clock> init, final;
 
         while (option != 0){
             cout << "Funcionalidades: " << endl;
@@ -61,7 +70,7 @@ int main () {
             switch (option){
                 case 1:
                     init = chrono::high_resolution_clock::now();
-                    // Chamar algoritmo aqui;
+                    solution = backtracking(puzzle, solution_three);
                     final = chrono::high_resolution_clock::now();
                     break;
                 case 2:
@@ -105,7 +114,7 @@ int main () {
             }
         }
 
-        return 0;
     }
-
+        delete puzzle;
+        return 0;
 }

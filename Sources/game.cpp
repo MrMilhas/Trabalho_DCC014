@@ -3,22 +3,15 @@
 #include <sstream>
 #include <stdlib.h>
 #include <string>
-#include <tuple>
-#include <list>
+#include <utility>
+#include <vector>
 #include "../Headers/game.h"
 
 using namespace std;
 
 //? Constructor and Destructor--------------------------------
-Game::Game(std::istream &input){
-    input >> this->n_pieces;
-    this->size_board = (2*n_pieces) + 1;
-    board = new char[0];
-    for (int i=0; i<this->size_board; i++){
-        input >> board[i];
-    }
-    this->count_white = n_pieces;
-    this->count_move = 0;
+Game::Game(){
+    
 }
 
 Game::~Game(){
@@ -34,21 +27,53 @@ void Game::print_board(){
     cout << "]" << endl;
 }
 
+void Game::print_solution(){
+    cout << "[ ";
+    for(int i=0; i<this->size_board; i++){
+        cout << board_win[i] << " ";
+    }
+    cout << "]" << endl;
+}
+
+void Game::build_board(std::istream &input){
+    input >> this->n_pieces;
+    this->size_board = (2*n_pieces) + 1;
+    board = new char[0];
+    board_win = new char[0];
+    for (int i=0; i<this->size_board; i++){
+        input >> board[i];
+        if(i<n_pieces){board_win[i] = BLACK;}
+        else{
+            if(i == n_pieces){board_win[i] = '-';}
+            else{board_win[i] = WHITE;}
+        }
+    }
+    this->count_white = n_pieces;
+    this->count_move = 0;
+}
+
 bool Game::verify_win(){
-    return count_white == 0;
+    for(int i=0; i<this->size_board; i++){
+        if(board[i] != board_win[i]){
+            return false;
+        }
+    }
+    return true;
 }
 
 Game *Game::build_child(){
-    Game *aux;
+    Game *aux = new Game();
 
     aux->n_pieces = this->n_pieces;
     aux->size_board = this->size_board;
     aux->count_white = this->count_white;
     aux->count_move = this->count_move;
     aux->board = new char[this->n_pieces];
+    aux->board_win = new char[0];
 
     for(int i=0; i<this->size_board; i++){
         aux->board[i] = this->board[i];
+        aux->board_win[i] = this->board_win[i];
     }
 
     return aux;
@@ -60,17 +85,18 @@ Game *Game::build_child(){
  * @param three            Recebe a árvore da solução;
  * @return list<tuple<int, int>>  Retorna a lista de movimentos possíveis;
  */
-list<tuple<int, int>> Game::possible_moves(list<Game *> *three){
-    list<tuple<int, int>> moves;
+std::vector<pair<int, int>> Game::possible_moves(vector<Game *> &three){
+    vector<std::pair<int, int>> moves;
 
     for(int i=0; i<this->size_board; i++){
         if(this->board[i] != '-' && this->board[i+1] == '-'){
             Game *aux = this->build_child();
             aux->board[i+1] = aux->board[i];
             aux->board[i] = '-';
-
-            if(!(std::find(three->begin(), three->end(), aux->board) != three->end())){
-                moves.push_back(tuple<int, int>(i, i+1));
+            for(std::vector<Game *>::iterator it = three.begin(); it != three.end(); ++it){
+                if(!(*it)->equals(aux)){
+                    moves.push_back(pair<int, int>(i, i+1));
+                }
             }
         }
 
@@ -79,8 +105,10 @@ list<tuple<int, int>> Game::possible_moves(list<Game *> *three){
             aux->board[i+2] = aux->board[i];
             aux->board[i] = '-';
 
-            if(!(std::find(three->begin(), three->end(), aux->board) != three->end())){
-                moves.push_back(tuple<int, int>(i, i+2));
+            for(std::vector<Game *>::iterator it = three.begin(); it != three.end(); ++it){
+                if(!(*it)->equals(aux)){
+                    moves.push_back(pair<int, int>(i, i+2));
+                }
             }
         }
 
@@ -89,8 +117,10 @@ list<tuple<int, int>> Game::possible_moves(list<Game *> *three){
             aux->board[i-1] = aux->board[i];
             aux->board[i] = '-';
 
-            if(!(std::find(three->begin(), three->end(), aux->board) != three->end())){
-                moves.push_back(tuple<int, int>(i, i-1));
+            for(std::vector<Game *>::iterator it = three.begin(); it != three.end(); ++it){
+                if(!(*it)->equals(aux)){
+                    moves.push_back(pair<int, int>(i, i-1));
+                }
             }
         }
 
@@ -99,11 +129,27 @@ list<tuple<int, int>> Game::possible_moves(list<Game *> *three){
             aux->board[i-2] = aux->board[i];
             aux->board[i] = '-';
 
-            if(!(std::find(three->begin(), three->end(), aux->board) != three->end())){
-                moves.push_back(tuple<int, int>(i, i-2));
+            for(std::vector<Game *>::iterator it = three.begin(); it != three.end(); ++it){
+                if(!(*it)->equals(aux)){
+                    moves.push_back(pair<int, int>(i, i-2));
+                }
             }
         }
     }
 
     return moves;
+}
+
+void Game::move(int id, int target){
+    char aux = this->board[target];
+    this->board[target] = this->board[id];
+    this->board[id] = aux;
+}
+
+bool Game::equals(Game *g){
+    for (int i = 0; i < this->size_board; i++){
+        if (this->board[i] != g->board[i])
+            return false;
+    }
+    return true;
 }
