@@ -52,7 +52,7 @@ class Game {
         int calc_estimate_cost();
         int calc_objective();
 
-        std::vector<std::pair<int, int>> possible_moves(vector<Game *> &three);
+        std::vector<std::pair<int, int>> possible_moves();
 
 };
 

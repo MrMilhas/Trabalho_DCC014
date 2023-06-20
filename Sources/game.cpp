@@ -15,7 +15,8 @@ Game::Game(){
 }
 
 Game::~Game(){
-    delete this->board;
+    delete [] this->board;
+    delete [] this->board_win;
 }
 
 //? Methods --------------------------------------------------
@@ -38,8 +39,8 @@ void Game::print_solution(){
 void Game::build_board(std::istream &input){
     input >> this->n_pieces;
     this->size_board = (2*n_pieces) + 1;
-    board = new char[0];
-    board_win = new char[0];
+    board = new char[this->size_board];
+    board_win = new char[this->size_board];
     for (int i=0; i<this->size_board; i++){
         input >> board[i];
         if(i<n_pieces){board_win[i] = BLACK;}
@@ -68,8 +69,8 @@ Game *Game::build_child(){
     aux->size_board = this->size_board;
     aux->count_white = this->count_white;
     aux->count_move = this->count_move;
-    aux->board = new char[this->n_pieces];
-    aux->board_win = new char[0];
+    aux->board = new char[this->size_board];
+    aux->board_win = new char[this->size_board];
 
     for(int i=0; i<this->size_board; i++){
         aux->board[i] = this->board[i];
@@ -80,62 +81,86 @@ Game *Game::build_child(){
 }
 
 /**
- * @brief Verifica os movimentos possíveis a partir de uma conifugração de tabuleiro;
+ * @brief Verifica os movimentos possíveis a partir de uma configuração de tabuleiro;
  * 
  * @param three            Recebe a árvore da solução;
  * @return list<tuple<int, int>>  Retorna a lista de movimentos possíveis;
  */
-std::vector<pair<int, int>> Game::possible_moves(vector<Game *> &three){
+std::vector<pair<int, int>> Game::possible_moves(){
     vector<std::pair<int, int>> moves;
-
-    for(int i=0; i<this->size_board; i++){
-        if(this->board[i] != '-' && this->board[i+1] == '-'){
-            Game *aux = this->build_child();
-            aux->board[i+1] = aux->board[i];
-            aux->board[i] = '-';
-            for(std::vector<Game *>::iterator it = three.begin(); it != three.end(); ++it){
-                if(!(*it)->equals(aux)){
-                    moves.push_back(pair<int, int>(i, i+1));
-                }
-            }
-        }
-
-        if(this->board[i] != '-' && this->board[i+2] == '-'){
-            Game *aux = this->build_child();
-            aux->board[i+2] = aux->board[i];
-            aux->board[i] = '-';
-
-            for(std::vector<Game *>::iterator it = three.begin(); it != three.end(); ++it){
-                if(!(*it)->equals(aux)){
-                    moves.push_back(pair<int, int>(i, i+2));
-                }
-            }
-        }
-
-        if(this->board[i] != '-' && this->board[i-1] == '-'){
-            Game *aux = this->build_child();
-            aux->board[i-1] = aux->board[i];
-            aux->board[i] = '-';
-
-            for(std::vector<Game *>::iterator it = three.begin(); it != three.end(); ++it){
-                if(!(*it)->equals(aux)){
-                    moves.push_back(pair<int, int>(i, i-1));
-                }
-            }
-        }
-
-        if(this->board[i] != '-' && this->board[i-2] == '-'){
-            Game *aux = this->build_child();
-            aux->board[i-2] = aux->board[i];
-            aux->board[i] = '-';
-
-            for(std::vector<Game *>::iterator it = three.begin(); it != three.end(); ++it){
-                if(!(*it)->equals(aux)){
-                    moves.push_back(pair<int, int>(i, i-2));
-                }
-            }
+    int indexVazio = 0;
+    for(int i = 0; i < this->size_board; i++){
+        if(this->board[i] == '-'){
+            indexVazio = i;
+            break;
         }
     }
+
+    if(indexVazio + 1 < this->size_board){
+        moves.push_back(pair<int,int>(indexVazio,indexVazio + 1));
+    }
+
+    if(indexVazio - 1 >= 0){
+        moves.push_back(pair<int,int>(indexVazio,indexVazio - 1));
+    }
+
+    if(indexVazio + 2 < this->size_board){
+        moves.push_back(pair<int,int>(indexVazio,indexVazio + 2));
+    }
+
+    if(indexVazio - 2 >= 0){
+        moves.push_back(pair<int,int>(indexVazio,indexVazio - 2));
+    }
+    
+    
+    // for(int i=0; i<this->size_board; i++){
+    //     if(this->board[i] != '-' && this->board[i+1] == '-'){
+    //         Game *aux = this->build_child();
+    //         aux->board[i+1] = aux->board[i];
+    //         aux->board[i] = '-';
+    //         for(std::vector<Game *>::iterator it = three.begin(); it != three.end(); ++it){
+    //             if(!(*it)->equals(aux)){
+    //                 moves.push_back(pair<int, int>(i, i+1));
+    //             }
+    //         }
+    //     }
+
+    //     if(this->board[i] != '-' && this->board[i+2] == '-'){
+    //         Game *aux = this->build_child();
+    //         aux->board[i+2] = aux->board[i];
+    //         aux->board[i] = '-';
+
+    //         for(std::vector<Game *>::iterator it = three.begin(); it != three.end(); ++it){
+    //             if(!(*it)->equals(aux)){
+    //                 moves.push_back(pair<int, int>(i, i+2));
+    //             }
+    //         }
+    //     }
+
+    //     if(this->board[i] != '-' && this->board[i-1] == '-'){
+    //         Game *aux = this->build_child();
+    //         aux->board[i-1] = aux->board[i];
+    //         aux->board[i] = '-';
+
+    //         for(std::vector<Game *>::iterator it = three.begin(); it != three.end(); ++it){
+    //             if(!(*it)->equals(aux)){
+    //                 moves.push_back(pair<int, int>(i, i-1));
+    //             }
+    //         }
+    //     }
+
+    //     if(this->board[i] != '-' && this->board[i-2] == '-'){
+    //         Game *aux = this->build_child();
+    //         aux->board[i-2] = aux->board[i];
+    //         aux->board[i] = '-';
+
+    //         for(std::vector<Game *>::iterator it = three.begin(); it != three.end(); ++it){
+    //             if(!(*it)->equals(aux)){
+    //                 moves.push_back(pair<int, int>(i, i-2));
+    //             }
+    //         }
+    //     }
+    // }
 
     return moves;
 }

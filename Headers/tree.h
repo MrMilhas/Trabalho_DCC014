@@ -34,7 +34,7 @@ class Tree{
         Node<T>* add(Node<T>* parent, T* filho, int cost = COST);
         Node<T>* search(T* element);
         Node<T>* search(int index);
-        void remove(Node<T>* folha);          
+        void remove(Node<T>* folha);        
 
         int getOrdem() {return this->ordem;};
         Node<T>* getRaiz()  {return this->raiz;};
@@ -45,11 +45,14 @@ class Tree{
 
         Node<T>* raiz;
         int      ordem;
+        int      indexNode;
 
+        bool verificaDescendentes(Node<T>* parent, T* element);
         void initTree(Node<T>* element);
         void mallocEdges(Node<T>* node);
         void removeEdge(Node<T>* node, T* element);
-        bool verificaDescendentes(Node<T>* parent, T* element);
+        void removeNode(Node<T>* node);
+        void corrigeIndex(int index);
 };
 
 
@@ -64,19 +67,18 @@ template <class T>
 Tree<T>::Tree(){
     this->raiz = NULL;
     this->ordem = 0;
+    this->indexNode = 0;
 }
 
 template <class T>
 void Tree<T>::initTree(Node<T>* node){
-    if(this->raiz != NULL)
-        return;
-    
     if(node == NULL){
         return;
     }
 
     this->raiz = node;
     this->ordem = 1;
+    this->indexNode = 1;
     node->edge = NULL;
     node->parent = NULL;
     node->prox = NULL;
@@ -108,11 +110,12 @@ Node<T>* Tree<T>::add(Node<T>* parent, T* filho, int cost){
     if(this->verificaDescendentes(parent,filho))
         return NULL;
     
-    Node<T>* node_filho = new Node(filho,this->ordem,cost);
+    Node<T>* node_filho = new Node(filho,this->indexNode,cost);
     node_filho->parent = parent;
     node_filho->prox = parent->prox;
     parent->prox = node_filho;
-    ordem++;
+    this->indexNode++;
+    this->ordem++;
 
     Edge<T>* edge = new Edge(parent,node_filho);
     edge->prox = parent->edge;
@@ -122,6 +125,13 @@ Node<T>* Tree<T>::add(Node<T>* parent, T* filho, int cost){
     return node_filho;
 }
 
+/** @brief Verifica se element é descendente de parent.
+ * 
+ *  @return Se element é descendente de parent retorna true, se não retorna false
+ * 
+ *  @param parent vértice pai de filho
+ *  @param filho  elemento a ser verificado
+ */
 template <class T>
 bool Tree<T>::verificaDescendentes(Node<T>* parent, T* element){
     Node<T>* n = parent;
@@ -180,11 +190,30 @@ void Tree<T>::remove(Node<T>* folha){
     if(folha->edge != NULL)
         return;
 
-    this->removeEdge(folha->parent,folha->element);
-    folha->parent->prox = folha->prox;
+    if(folha->parent != NULL){
+        this->removeNode(folha);
+        this->removeEdge(folha->parent,folha->element);
+    }
+    int index = folha->index;
     delete folha->element;
     delete folha;
     this->ordem--;
+}
+
+template <class T>
+void Tree<T>::removeNode(Node<T>* node){
+    
+    if(node == NULL)
+        return;
+    
+    Node<T>* anterior = this->raiz;
+    while(anterior != NULL){
+        if(anterior->prox ==  node){
+            anterior->prox = node->prox;
+            return;
+        }
+        anterior = anterior->prox;
+    }
 }
 
 template <class T>
@@ -271,6 +300,7 @@ class Node{
         ~Node() {};
 
         T* getElement()       {return this->element;};
+        int getCost()        {return this->cost;};
         int getIndex()       {return this->index;};
         int getNumFilhos()   {return this->num_filhos;};
         Node<T>* getParent() {return this->parent;};

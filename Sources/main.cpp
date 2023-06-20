@@ -15,7 +15,7 @@
 
 #include "../Headers/game.h"
 #include "../Headers/algorithms.h"
-#include "./game.cpp"
+//#include "./game.cpp"
 
 using namespace std;
 
@@ -29,9 +29,10 @@ int main () {
 
     int option = 9;
     std::chrono::time_point<std::chrono::system_clock> init, final;
-    vector<Game *> solution_three;
+    vector<Game*> solution_three;
     bool solution = false;
-    Game *puzzle = new Game();
+    Game* puzzle = new Game();
+    TreeGame* tree;
 
 
     if(!arq){
@@ -67,6 +68,7 @@ int main () {
             cout << endl;
             cout << "------------------------------------------" << endl;
 
+            tree = new TreeGame(puzzle);
             switch (option){
                 case 1:
                     init = chrono::high_resolution_clock::now();
@@ -75,12 +77,16 @@ int main () {
                     break;
                 case 2:
                     init = chrono::high_resolution_clock::now();
-                    // Chamar algoritmo aqui;
+                    solution = buscaProfundidade(tree);
+                    solution_three = tree->caminho_win();
+                    tree->save("buscaProfundidade.dot");
                     final = chrono::high_resolution_clock::now();
                     break;
                 case 3:
                     init = chrono::high_resolution_clock::now();
-                    // Chamar algoritmo aqui;
+                    solution = buscaLargura(tree);
+                    solution_three = tree->caminho_win();
+                    tree->save("buscaLargura.dot");
                     final = chrono::high_resolution_clock::now();
                     break;
                 case 4:
@@ -118,9 +124,11 @@ int main () {
                 game->print_board();
             }
             cout << endl;
+            delete tree;
         }
-
     }
-        delete puzzle;
-        return 0;
+    arq.close();
+    delete puzzle;
+    delete tree;
+    return 0;
 }
