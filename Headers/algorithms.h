@@ -40,11 +40,6 @@ bool backtracking (Game *puzzle, vector<Game *> &three){
     Game *child = puzzle->build_child();     // Criando nó filho;
     std::vector<std::pair<int, int>> possible_moves = child->possible_moves();
 
-    // cout << "movimentos possiveis: \n";
-    // for(auto currentTuple : possible_moves){
-    //     cout <<get<0>(currentTuple)  << " - " << get<1>(currentTuple) << endl;
-    // }
-
     for(auto currentTuple : possible_moves){
         // Avança
         child->move(get<0>(currentTuple), get<1>(currentTuple));
