@@ -30,7 +30,7 @@ class Game {
         char *board;      // Tabuleiro;
         char *board_win;  // Tabuleiro objetivo;
 
-        int count_white;  // Qauntidade de peças brancas fora do lugar (à esquerda);
+        int cost;         // Custo total até chegar nesse nó (Baseado na quantidade de peças fora do lugar);
         int count_move;   // Contador de movimentos;
 
         //? Constructor and Destructor ---------------------------------
@@ -51,6 +51,7 @@ class Game {
         
         int calc_estimate_cost();
         int calc_objective();
+        int calc_cost();
 
         std::vector<std::pair<int, int>> possible_moves();
 

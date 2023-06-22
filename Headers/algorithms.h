@@ -128,4 +128,49 @@ bool buscaProfundidade(TreeGame* tree){
     return true;
 }
 
+bool buscaOrdenada(TreeGame *tree){
+    std::list<Node<Game>*> abertos = {tree->getRaiz()};
+    std::list<Node<Game>*> fechados;
+
+    Node<Game>* node;
+    Game *game = new Game();
+    bool sucesso = false;
+    while(!sucesso){
+        if(abertos.empty())
+            return false;
+
+        long int inf = 999;  // Variável auxiliar para encontrar o menor custo na lista de abertos;
+
+        // Obtem o nó com menor custo total da lista de abertos;
+        for(auto open : abertos){
+            if(open->getElement()->cost < inf){
+                inf = open->getElement()->cost;
+                node = open;
+                game = open->getElement();
+            }
+        }
+
+        if(game->verify_win()){
+            return true;
+        }
+        else{
+            std::vector<std::pair<int,int>> possible_moves = game->possible_moves();
+            for(auto move : possible_moves){
+                Game* child = game->build_child();
+                child->move(get<0>(move),get<1>(move));
+                child->cost = child->calc_cost() + game->cost;  // Calcula o custo total do nó;
+                Node<Game>* search = tree->search(child);
+                if(search == NULL){  // Verifica se o vértice já está na arvore                    
+                    abertos.push_back(tree->add(node,child));
+                }else{
+                    delete child;
+                }
+            }
+            fechados.push_back(node);
+            abertos.remove(node);
+        }
+    }
+    return true;
+}
+
 #endif
