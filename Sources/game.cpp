@@ -49,7 +49,7 @@ void Game::build_board(std::istream &input){
             else{board_win[i] = WHITE;}
         }
     }
-    this->count_white = n_pieces;
+    this->cost = 0;
     this->count_move = 0;
 }
 
@@ -67,7 +67,7 @@ Game *Game::build_child(){
 
     aux->n_pieces = this->n_pieces;
     aux->size_board = this->size_board;
-    aux->count_white = this->count_white;
+    aux->cost = this->cost;
     aux->count_move = this->count_move;
     aux->board = new char[this->size_board];
     aux->board_win = new char[this->size_board];
@@ -83,7 +83,7 @@ Game *Game::build_child(){
 /**
  * @brief Verifica os movimentos possíveis a partir de uma configuração de tabuleiro;
  * 
- * @param three            Recebe a árvore da solução;
+ * @param three                   Recebe a árvore da solução;
  * @return list<tuple<int, int>>  Retorna a lista de movimentos possíveis;
  */
 std::vector<pair<int, int>> Game::possible_moves(){
@@ -111,56 +111,6 @@ std::vector<pair<int, int>> Game::possible_moves(){
     if(indexVazio - 2 >= 0){
         moves.push_back(pair<int,int>(indexVazio,indexVazio - 2));
     }
-    
-    
-    // for(int i=0; i<this->size_board; i++){
-    //     if(this->board[i] != '-' && this->board[i+1] == '-'){
-    //         Game *aux = this->build_child();
-    //         aux->board[i+1] = aux->board[i];
-    //         aux->board[i] = '-';
-    //         for(std::vector<Game *>::iterator it = three.begin(); it != three.end(); ++it){
-    //             if(!(*it)->equals(aux)){
-    //                 moves.push_back(pair<int, int>(i, i+1));
-    //             }
-    //         }
-    //     }
-
-    //     if(this->board[i] != '-' && this->board[i+2] == '-'){
-    //         Game *aux = this->build_child();
-    //         aux->board[i+2] = aux->board[i];
-    //         aux->board[i] = '-';
-
-    //         for(std::vector<Game *>::iterator it = three.begin(); it != three.end(); ++it){
-    //             if(!(*it)->equals(aux)){
-    //                 moves.push_back(pair<int, int>(i, i+2));
-    //             }
-    //         }
-    //     }
-
-    //     if(this->board[i] != '-' && this->board[i-1] == '-'){
-    //         Game *aux = this->build_child();
-    //         aux->board[i-1] = aux->board[i];
-    //         aux->board[i] = '-';
-
-    //         for(std::vector<Game *>::iterator it = three.begin(); it != three.end(); ++it){
-    //             if(!(*it)->equals(aux)){
-    //                 moves.push_back(pair<int, int>(i, i-1));
-    //             }
-    //         }
-    //     }
-
-    //     if(this->board[i] != '-' && this->board[i-2] == '-'){
-    //         Game *aux = this->build_child();
-    //         aux->board[i-2] = aux->board[i];
-    //         aux->board[i] = '-';
-
-    //         for(std::vector<Game *>::iterator it = three.begin(); it != three.end(); ++it){
-    //             if(!(*it)->equals(aux)){
-    //                 moves.push_back(pair<int, int>(i, i-2));
-    //             }
-    //         }
-    //     }
-    // }
 
     return moves;
 }
@@ -177,4 +127,15 @@ bool Game::equals(Game *g){
             return false;
     }
     return true;
+}
+
+int Game::calc_cost(){
+    int cost = 0;
+
+    for(int i=0; i<this->size_board; i++){
+        if(this->board[i] != this->board_win[i]){
+            cost++;
+        }
+    }
+    return cost;
 }

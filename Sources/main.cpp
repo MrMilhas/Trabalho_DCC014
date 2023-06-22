@@ -25,7 +25,7 @@ int main () {
     cout << endl;
 
     ifstream arq;
-    arq.open("../input.txt");
+    arq.open("./Sources/input.txt");
 
     int option = 9;
     std::chrono::time_point<std::chrono::system_clock> init, final;
@@ -91,7 +91,9 @@ int main () {
                     break;
                 case 4:
                     init = chrono::high_resolution_clock::now();
-                    // Chamar algoritmo aqui;
+                    solution = buscaOrdenada(tree);
+                    solution_three = tree->caminho_win();
+                    tree->save("buscaOrdenada.dot");
                     final = chrono::high_resolution_clock::now();
                     break;
                 case 5:
