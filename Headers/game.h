@@ -38,7 +38,6 @@ class Game {
         ~Game();
 
         //? Methods ----------------------------------------------------
-        //bool possible_move(int id, int target);
         bool verify_win();
         bool equals(Game *g);
         
@@ -49,9 +48,7 @@ class Game {
 
         Game *build_child();
         
-        int calc_estimate_cost();
-        int calc_objective();
-        int calc_cost();
+        int calc_heuristic();
 
         std::vector<std::pair<int, int>> possible_moves();
 
