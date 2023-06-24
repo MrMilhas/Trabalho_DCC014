@@ -129,7 +129,7 @@ bool Game::equals(Game *g){
     return true;
 }
 
-int Game::calc_cost(){
+int Game::calc_heuristic(){
     int cost = 0;
 
     for(int i=0; i<this->size_board; i++){

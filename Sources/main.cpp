@@ -98,12 +98,16 @@ int main () {
                     break;
                 case 5:
                     init = chrono::high_resolution_clock::now();
-                    // Chamar algoritmo aqui;
+                    solution = buscaGulosa(tree);
+                    solution_three = tree->caminho_win();
+                    tree->save("buscaGulosa.dot");
                     final = chrono::high_resolution_clock::now();
                     break;
                 case 6:
                     init = chrono::high_resolution_clock::now();
-                    // Chamar algoritmo aqui;
+                    solution = buscaAEstrela(tree);
+                    solution_three = tree->caminho_win();
+                    tree->save("buscaAEstrela.dot");
                     final = chrono::high_resolution_clock::now();
                     break;
                 case 7:
