@@ -2,6 +2,7 @@
 #define ALGORITHMS_H
 
 #include <iostream>
+#include <stack>
 #include <fstream>
 #include <list>
 #include <tuple>
@@ -258,6 +259,63 @@ bool buscaAEstrela(TreeGame *tree){
             }
             fechados.push_back(node);
             abertos.remove(node);
+        }
+    }
+    return true;
+}
+
+int calc_func(Game* game){
+   return game->calc_heuristic() + game->cost;
+}
+
+// TO DO
+Game* escolhe_filho(TreeGame* tree,Game* game){
+    Game* child = game->build_child(); 
+
+    return child;
+}
+
+bool buscaIDAEstrela(TreeGame* tree){
+    Node<Game>* node = tree->getRaiz();
+    std::stack<Game*> filhos;
+    int min_descartados = 0;
+
+    int func_avaliacao = calc_func(node->getElement());
+    int patamar = func_avaliacao;
+    int patamar_old = -1;
+
+
+    bool sucesso = false;
+    while(!sucesso){
+        if(patamar_old == patamar){
+            return false;
+        }else{
+            Game* game = node->getElement();
+            func_avaliacao = calc_func(game); 
+            if(game->verify_win() && (func_avaliacao <= patamar)){
+                sucesso = true;
+            }else{
+                if(func_avaliacao > patamar){
+                    if(func_avaliacao < min_descartados){
+                        min_descartados = func_avaliacao;
+                    }
+                    node = node->getParent();
+                }
+
+                // TO DO
+                // implementar a escolha do filho para inserção na tree
+                Game* child = escolhe_filho(tree,game);
+                if(child != NULL){
+                    node = tree->add(node,child);
+                }else{
+                    if(node == tree->getRaiz()){
+                        patamar_old = patamar;
+                        patamar = min_descartados;
+                    }else{
+                        node = node->getParent();
+                    }
+                }
+            }
         }
     }
     return true;

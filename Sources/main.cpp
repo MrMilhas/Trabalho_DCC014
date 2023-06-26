@@ -25,7 +25,7 @@ int main () {
     cout << endl;
 
     ifstream arq;
-    arq.open("./Sources/input.txt");
+    arq.open("../Sources/input.txt");
 
     int option = 9;
     std::chrono::time_point<std::chrono::system_clock> init, final;
