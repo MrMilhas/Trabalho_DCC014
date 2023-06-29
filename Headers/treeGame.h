@@ -18,6 +18,7 @@ class TreeGame : public Tree<Game> {
         void save(string str);
         void print();
         vector<Game*> caminho_win();
+        int custo_win();
 
     private:
 
@@ -100,6 +101,22 @@ vector<Game*> TreeGame::caminho_win(){
     }
     std::reverse(caminho.begin(), caminho.end());
     return caminho;
+}
+/**
+ * @brief Retorna o custo do caminho da raiz até o tabuleiro vitorioso
+ * @return custo do caminho até o tabuleiro vitorioso. Se não for encontrado, retorna INT_MAX
+*/
+int TreeGame::custo_win(){
+    Node<Game>* node = this->getRaiz();
+    while(!node->getElement()->verify_win()){
+        node = node->getProx();
+    }
+    
+    if(node == NULL){   
+        return INT_MAX;
+    }
+    
+    return node->getCost();
 }
 
 void TreeGame::print(){

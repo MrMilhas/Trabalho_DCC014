@@ -133,11 +133,13 @@ int main () {
                 game->print_board();
             }
             cout << endl;
+            cout << "Custo da soluçao: " << tree->custo_win() << endl;
+            cout << "Profundidade da árvore: " << tree->getProfundidade() << endl;
+            cout << endl;
             delete tree;
         }
     }
     arq.close();
     delete puzzle;
-    delete tree;
     return 0;
 }

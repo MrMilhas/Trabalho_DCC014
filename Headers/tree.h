@@ -39,6 +39,7 @@ class Tree{
 
         int getOrdem() {return this->ordem;};
         Node<T>* getRaiz()  {return this->raiz;};
+        int getProfundidade() {return this->profundidade;};
 
         virtual bool compare(T* a_element, T* b_element) = 0;
 
@@ -46,6 +47,7 @@ class Tree{
 
         Node<T>* raiz;
         int      ordem;
+        int      profundidade;
         int      indexNode;
 
         bool verificaDescendentes(Node<T>* parent, T* element);
@@ -69,6 +71,7 @@ Tree<T>::Tree(){
     this->raiz = NULL;
     this->ordem = 0;
     this->indexNode = 0;
+    this->profundidade = 0;
 }
 
 template <class T>
@@ -80,6 +83,7 @@ void Tree<T>::initTree(Node<T>* node){
     this->raiz = node;
     this->ordem = 1;
     this->indexNode = 1;
+    this->profundidade = 0;
     node->edge = NULL;
     node->parent = NULL;
     node->prox = NULL;
@@ -117,6 +121,11 @@ Node<T>* Tree<T>::add(Node<T>* parent, T* filho){
     parent->prox = node_filho;
     this->indexNode++;
     this->ordem++;
+
+    int profundidade_node = node_filho->getCost();
+    if(this->profundidade < profundidade_node){
+        this->profundidade = profundidade_node;
+    }
 
     Edge<T>* edge = new Edge(parent,node_filho);
     edge->prox = parent->edge;
