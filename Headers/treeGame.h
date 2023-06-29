@@ -115,6 +115,8 @@ void TreeGame::print(){
             edge->getFinal()->getElement()->print_board();
             edge = edge->getProx();
         }
+
+        cout << " Custo: " << node->getCost();
         
         Node<Game>* pai = node->getParent();
         cout << " Pai: ";

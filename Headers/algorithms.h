@@ -9,6 +9,7 @@
 #include <vector>
 #include <utility>
 #include <algorithm>
+#include <limits.h>
 #include "game.h"
 #include "treeGame.h"
 
@@ -264,23 +265,41 @@ bool buscaAEstrela(TreeGame *tree){
     return true;
 }
 
-int calc_func(Game* game){
-   return game->calc_heuristic() + game->cost;
+int calc_func(Node<Game>* node){
+   Game* game = node->getElement();
+   return node->getCost() + game->calc_heuristic();
 }
 
-// TO DO
 Game* escolhe_filho(TreeGame* tree,Game* game){
-    Game* child = game->build_child(); 
+    std::vector<std::pair<int,int>> possible_moves = game->possible_moves();
+    Game* child = game->build_child();
 
-    return child;
+    // cout << "Movimentos possiveis:\n";  
+    // for(auto move : possible_moves){
+    //     child->move(get<0>(move),get<1>(move));
+    //     child->print_board();
+    //     child->move(get<0>(move),get<1>(move));
+    // }
+
+    for(auto move : possible_moves){
+        child->move(get<0>(move),get<1>(move));
+        if(tree->search(child) == NULL){                   
+        //    "child retornada: ";
+        //    child->print_board(); 
+            return child;
+        }
+        child->move(get<0>(move),get<1>(move));
+    }
+    // cout << "ERRO!!!\n";
+    return NULL;
 }
 
 bool buscaIDAEstrela(TreeGame* tree){
     Node<Game>* node = tree->getRaiz();
     std::stack<Game*> filhos;
-    int min_descartados = 0;
+    int min_descartados = INT_MAX;
 
-    int func_avaliacao = calc_func(node->getElement());
+    int func_avaliacao = calc_func(node);
     int patamar = func_avaliacao;
     int patamar_old = -1;
 
@@ -290,9 +309,12 @@ bool buscaIDAEstrela(TreeGame* tree){
         if(patamar_old == patamar){
             return false;
         }else{
-            Game* game = node->getElement();
-            func_avaliacao = calc_func(game); 
-            if(game->verify_win() && (func_avaliacao <= patamar)){
+            // tree->print();
+            //     cout << "node: \n";
+            //     node->getElement()->print_board();
+            //     cout << "patamar: " << patamar << endl;
+            //     cout << "func: " << func_avaliacao << endl;
+            if(node->getElement()->verify_win() && (func_avaliacao <= patamar)){
                 sucesso = true;
             }else{
                 if(func_avaliacao > patamar){
@@ -302,17 +324,31 @@ bool buscaIDAEstrela(TreeGame* tree){
                     node = node->getParent();
                 }
 
-                // TO DO
-                // implementar a escolha do filho para inserção na tree
-                Game* child = escolhe_filho(tree,game);
+                // cout << "node: \n";
+                // node->getElement()->print_board();
+                // cout << "patamar: " << patamar << endl;
+                // cout << "func: " << func_avaliacao << endl;
+
+                Game* child = escolhe_filho(tree,node->getElement());
                 if(child != NULL){
                     node = tree->add(node,child);
+                    func_avaliacao = calc_func(node); 
+                    // cout << "Add:\n";
+                    // child->print_board();
                 }else{
                     if(node == tree->getRaiz()){
                         patamar_old = patamar;
                         patamar = min_descartados;
+                        min_descartados = INT_MAX;
+                        Game* raiz = node->getElement();
+                        //raiz->print_board();
+                        tree->clear();
+                        // tree->print();
+                        // cout << "+++++++++++++++++++++++++++\n";
+                        // cout << "novo patamar:" << patamar << endl;
                     }else{
                         node = node->getParent();
+                        func_avaliacao = calc_func(node);
                     }
                 }
             }

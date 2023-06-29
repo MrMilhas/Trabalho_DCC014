@@ -31,10 +31,11 @@ class Tree{
         Tree();
         ~Tree();
 
-        Node<T>* add(Node<T>* parent, T* filho, int cost = COST);
+        Node<T>* add(Node<T>* parent, T* filho);
         Node<T>* search(T* element);
         Node<T>* search(int index);
-        void remove(Node<T>* folha);        
+        void remove(Node<T>* folha);
+        void clear();    
 
         int getOrdem() {return this->ordem;};
         Node<T>* getRaiz()  {return this->raiz;};
@@ -95,7 +96,7 @@ void Tree<T>::initTree(Node<T>* node){
  *  @param cost   custo do pai até filho
  */
 template <class T>
-Node<T>* Tree<T>::add(Node<T>* parent, T* filho, int cost){
+Node<T>* Tree<T>::add(Node<T>* parent, T* filho){
      
     if(parent == NULL)
         return NULL;
@@ -110,7 +111,7 @@ Node<T>* Tree<T>::add(Node<T>* parent, T* filho, int cost){
     if(this->verificaDescendentes(parent,filho))
         return NULL;
     
-    Node<T>* node_filho = new Node(filho,this->indexNode,cost);
+    Node<T>* node_filho = new Node(filho,this->indexNode);
     node_filho->parent = parent;
     node_filho->prox = parent->prox;
     parent->prox = node_filho;
@@ -161,20 +162,21 @@ Node<T>* Tree<T>::search(T* element){
 }
 
 /**
- * @brief Busca pelo vértice com o índice correspondente.
- * @param index índice alvo da busca
- * @return Retorna o vértice o índice correspondente. Caso a busca falhe, retorna NULL.
+ * @brief Esvazia a árvore, restando apenas a raiz.
 */
 template <class T>
-Node<T>* Tree<T>::search(int index){
-    Node<T>* n = this->raiz;
+void Tree<T>::clear(){
+    Node<T>* n = this->raiz->prox;
+    this->mallocEdges(this->raiz);
+    Node<T>* prox;
     while(n != NULL){
-        if(n->index == index){
-            return n;
-        }
-        n = n->prox;
+        prox = n->prox;
+        this->mallocEdges(n);
+        delete n->element;
+        delete n;
+        n = prox;
     }
-    return NULL;
+    this->initTree(this->raiz);
 }
 
 /**
@@ -278,48 +280,48 @@ class Node{
 
         T* element;
         int index;
-        int cost;       //custo até a raiz
         int num_filhos;
         Node<T>* parent;
         Node<T>* prox;
         Edge<T>* edge;
 
-        int calcCost(int cost);
-
     public:
 
-        Node(T* element, int index = 0, int cost = COST){
+        Node(T* element, int index = 0){
             this->element = element;
             this->index = index;
             this->num_filhos = 0;
             this->parent = NULL;
             this->prox = NULL;
             this->edge = NULL;
-            this->cost = this->calcCost(cost);
         };
         ~Node() {};
 
         T* getElement()       {return this->element;};
-        int getCost()        {return this->cost;};
         int getIndex()       {return this->index;};
         int getNumFilhos()   {return this->num_filhos;};
         Node<T>* getParent() {return this->parent;};
         Node<T>* getProx()   {return this->prox;};
         Edge<T>* getEdge()   {return this->edge;};
+        int getCost();
 
         // void setParent(Node<T>* parent) {this->parent = parent;};
         // void setProx(Node<T>* prox)     {this->prox = prox;};
         // void setEdge(Edge<T>* edge)     {this->edge = edge;};
 };
 
-template <class T>
-int Node<T>::calcCost(int cost){
-
-    if(this->parent == NULL){
-        return 0;
+/**
+ * @brief Retorna o custo do caminho da raiz até o nó.
+*/
+template<class T>
+int Node<T>::getCost(){
+    int cost = 0;
+    Node<T>* node = this->parent;
+    while(node != NULL){
+        node = node->parent;
+        cost++;
     }
-
-    return this->parent->cost + cost;
+    return cost;
 }
 
 template <class T>

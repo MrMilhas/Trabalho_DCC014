@@ -15,7 +15,8 @@
 
 #include "../Headers/game.h"
 #include "../Headers/algorithms.h"
-//#include "./game.cpp"
+
+#define OUTPUT "/Output/"
 
 using namespace std;
 
@@ -79,40 +80,42 @@ int main () {
                     init = chrono::high_resolution_clock::now();
                     solution = buscaProfundidade(tree);
                     solution_three = tree->caminho_win();
-                    tree->save("buscaProfundidade.dot");
+                    tree->save("../Output/buscaProfundidade.dot");
                     final = chrono::high_resolution_clock::now();
                     break;
                 case 3:
                     init = chrono::high_resolution_clock::now();
                     solution = buscaLargura(tree);
                     solution_three = tree->caminho_win();
-                    tree->save("buscaLargura.dot");
+                    tree->save("../Output/buscaLargura.dot");
                     final = chrono::high_resolution_clock::now();
                     break;
                 case 4:
                     init = chrono::high_resolution_clock::now();
                     solution = buscaOrdenada(tree);
                     solution_three = tree->caminho_win();
-                    tree->save("buscaOrdenada.dot");
+                    tree->save("../Output/buscaOrdenada.dot");
                     final = chrono::high_resolution_clock::now();
                     break;
                 case 5:
                     init = chrono::high_resolution_clock::now();
                     solution = buscaGulosa(tree);
                     solution_three = tree->caminho_win();
-                    tree->save("buscaGulosa.dot");
+                    tree->save("../Output/buscaGulosa.dot");
                     final = chrono::high_resolution_clock::now();
                     break;
                 case 6:
                     init = chrono::high_resolution_clock::now();
                     solution = buscaAEstrela(tree);
                     solution_three = tree->caminho_win();
-                    tree->save("buscaAEstrela.dot");
+                    tree->save("../Output/buscaAEstrela.dot");
                     final = chrono::high_resolution_clock::now();
                     break;
                 case 7:
                     init = chrono::high_resolution_clock::now();
-                    // Chamar algoritmo aqui;
+                    solution = buscaIDAEstrela(tree);
+                    solution_three = tree->caminho_win();
+                    tree->save("../Output/buscaIDA*.dot");
                     final = chrono::high_resolution_clock::now();
                     break;
                 case 0:
