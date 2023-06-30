@@ -15,51 +15,33 @@
 
 using namespace std;
 
-bool searchTree(vector<Game *> &three, Game* puzzle){
 
-    for(Game* game : three){
-        if(game->equals(puzzle)){
-            return true;
-        }
-    }
-    return false;
-}
+// Funções auxiliares
+int calc_func(Node<Game>* node);
+Game* escolhe_filho(TreeGame* tree,Game* game);
 
-/**
- * @brief Algoritmo de busca não informado Backtracking;
- * 
- * @param puzzle  Tabuleiro inicial do jogo;
- * @param three   Árvore com o caminho da solução;
- * @return true   Retorna verdadeiro se encontra solução;
- * @return false  Retorna falso se não encontra solução;
- */
-bool backtracking (Game *puzzle, vector<Game *> &three){
-    three.push_back(puzzle);                // Adicionando tabuleiro inicial no nó da árvore;
-    puzzle->print_board();
-    if(puzzle->verify_win()){return true;}  // Verificando condição de vitória inicial;
 
-    Game *child = puzzle->build_child();     // Criando nó filho;
-    std::vector<std::pair<int, int>> possible_moves = child->possible_moves();
-
-    for(auto currentTuple : possible_moves){
-        // Avança
-        child->move(get<0>(currentTuple), get<1>(currentTuple));
-
-        if(!searchTree(three,child)){
-            if(backtracking(child, three)){
-                return true;
+// Algoritmos de busca
+bool backtracking (TreeGame* tree){
+    Node<Game>* node = tree->getRaiz();
+    bool sucesso = false;
+    while(!sucesso){
+        Game* child = escolhe_filho(tree,node->getElement());
+        if(child != NULL){
+            node = tree->add(node,child);
+            if(node->getElement()->verify_win()){
+                sucesso = true;
+            }
+        }else{
+            if(node == tree->getRaiz()){
+                return false;
+            }else{
+                node = node->getParent();
             }
         }
-
-        // Retorna
-        child->move(get<1>(currentTuple), get<0>(currentTuple));
     }
-    puzzle->print_board();
-    cout << " removido\n";
-    three.pop_back();
-    delete child;
-
-    return false;
+    tree->nodes_expandidos = tree->getOrdem();
+    return true;
 }
 
 bool buscaLargura(TreeGame* tree){
@@ -269,24 +251,6 @@ bool buscaAEstrela(TreeGame *tree){
     return true;
 }
 
-int calc_func(Node<Game>* node){
-   Game* game = node->getElement();
-   return node->getCost() + game->calc_heuristic();
-}
-
-Game* escolhe_filho(TreeGame* tree,Game* game){
-    std::vector<std::pair<int,int>> possible_moves = game->possible_moves();
-    Game* child = game->build_child();
-    for(auto move : possible_moves){
-        child->move(get<0>(move),get<1>(move));
-        if(tree->search(child) == NULL){                    
-            return child;
-        }
-        child->move(get<0>(move),get<1>(move));
-    }
-    return NULL;
-}
-
 bool buscaIDAEstrela(TreeGame* tree){
     Node<Game>* node = tree->getRaiz();
     std::stack<Game*> filhos;
@@ -331,5 +295,24 @@ bool buscaIDAEstrela(TreeGame* tree){
     tree->nodes_expandidos = tree->getOrdem();
     return true;
 }
+
+int calc_func(Node<Game>* node){
+   Game* game = node->getElement();
+   return node->getCost() + game->calc_heuristic();
+}
+
+Game* escolhe_filho(TreeGame* tree,Game* game){
+    std::vector<std::pair<int,int>> possible_moves = game->possible_moves();
+    Game* child = game->build_child();
+    for(auto move : possible_moves){
+        child->move(get<0>(move),get<1>(move));
+        if(tree->search(child) == NULL){                    
+            return child;
+        }
+        child->move(get<0>(move),get<1>(move));
+    }
+    return NULL;
+}
+
 
 #endif

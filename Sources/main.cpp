@@ -73,7 +73,9 @@ int main () {
             switch (option){
                 case 1:
                     init = chrono::high_resolution_clock::now();
-                    solution = backtracking(puzzle, solution_three);
+                    solution = backtracking(tree);
+                    solution_three = tree->caminho_win();
+                    tree->save("../Output/backtracking.dot");
                     final = chrono::high_resolution_clock::now();
                     break;
                 case 2:
