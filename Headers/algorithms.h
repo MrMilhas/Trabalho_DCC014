@@ -36,7 +36,6 @@ bool searchTree(vector<Game *> &three, Game* puzzle){
 bool backtracking (Game *puzzle, vector<Game *> &three){
     three.push_back(puzzle);                // Adicionando tabuleiro inicial no nó da árvore;
     puzzle->print_board();
-    cout << " adicionado\n";
     if(puzzle->verify_win()){return true;}  // Verificando condição de vitória inicial;
 
     Game *child = puzzle->build_child();     // Criando nó filho;
@@ -329,6 +328,7 @@ bool buscaIDAEstrela(TreeGame* tree){
             }
         }
     }
+    tree->nodes_expandidos = tree->getOrdem();
     return true;
 }
 

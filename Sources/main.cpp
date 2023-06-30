@@ -128,6 +128,9 @@ int main () {
                     continue;
             }
 
+            double tempo_exec = std::chrono::duration_cast<std::chrono::microseconds>(final - init).count();
+            tempo_exec *= 1e-6;
+
             cout << "Solução:\n";
             for(Game* game : solution_three){
                 game->print_board();
@@ -137,6 +140,7 @@ int main () {
             cout << "Profundidade da árvore: " << tree->getProfundidade() << endl;
             cout << "Nós visitados: " << tree->getOrdem() << endl;
             cout << "Nós expandidos: " << tree->nodes_expandidos << endl;
+            cout << "Tempo de execução: " << fixed << tempo_exec << setprecision(6) << " segundos" << endl;
             cout << endl;
             delete tree;
         }
