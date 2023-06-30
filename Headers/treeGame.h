@@ -11,14 +11,16 @@ class TreeGame : public Tree<Game> {
 
     public:
 
-        TreeGame(Game* game) : Tree(game->build_child()) {};
-        ~TreeGame() {};
+        TreeGame(Game* game) : Tree(game->build_child()) {nodes_expandidos = 0;};
+        ~TreeGame() {nodes_expandidos = 0;};
 
         bool compare(Game* a, Game* b) {return a->equals(b);};
         void save(string str);
         void print();
         vector<Game*> caminho_win();
         int custo_win();
+
+        int nodes_expandidos;
 
     private:
 

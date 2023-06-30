@@ -90,6 +90,7 @@ bool buscaLargura(TreeGame* tree){
                 }
             }
             fechados.push_back(node);
+            tree->nodes_expandidos++;
             abertos.pop_front();
         }
     }
@@ -124,6 +125,7 @@ bool buscaProfundidade(TreeGame* tree){
                 }
             }
             fechados.push_back(node);
+            tree->nodes_expandidos++;
             abertos.remove(node);
         }
     }
@@ -169,6 +171,7 @@ bool buscaOrdenada(TreeGame *tree){
                 }
             }
             fechados.push_back(node);
+            tree->nodes_expandidos++;
             abertos.remove(node);
         }
     }
@@ -214,6 +217,7 @@ bool buscaGulosa(TreeGame *tree){
                 }
             }
             fechados.push_back(node);
+            tree->nodes_expandidos++;
             abertos.remove(node);
         }
     }
@@ -259,6 +263,7 @@ bool buscaAEstrela(TreeGame *tree){
                 }
             }
             fechados.push_back(node);
+            tree->nodes_expandidos++;
             abertos.remove(node);
         }
     }

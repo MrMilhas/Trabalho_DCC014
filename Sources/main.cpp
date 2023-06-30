@@ -135,6 +135,8 @@ int main () {
             cout << endl;
             cout << "Custo da soluçao: " << tree->custo_win() << endl;
             cout << "Profundidade da árvore: " << tree->getProfundidade() << endl;
+            cout << "Nós visitados: " << tree->getOrdem() << endl;
+            cout << "Nós expandidos: " << tree->nodes_expandidos << endl;
             cout << endl;
             delete tree;
         }
