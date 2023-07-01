@@ -138,10 +138,11 @@ int main () {
                 game->print_board();
             }
             cout << endl;
+            cout << "Profundidade da solução: " << solution_three.size() - 1 << endl;
             cout << "Custo da soluçao: " << tree->custo_win() << endl;
-            cout << "Profundidade da árvore: " << tree->getProfundidade() << endl;
             cout << "Nós visitados: " << tree->getOrdem() << endl;
             cout << "Nós expandidos: " << tree->nodes_expandidos << endl;
+            cout << "Fator de ramificação: " << tree->getFatorRamificacao() << endl;
             cout << "Tempo de execução: " << fixed << tempo_exec << setprecision(6) << " segundos" << endl;
             cout << endl;
             delete tree;

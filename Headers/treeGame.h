@@ -19,7 +19,6 @@ class TreeGame : public Tree<Game> {
         void print();
         vector<Game*> caminho_win();
         int custo_win();
-
         int nodes_expandidos;
 
     private:

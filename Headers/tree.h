@@ -31,7 +31,7 @@ class Tree{
         Tree();
         ~Tree();
 
-        Node<T>* add(Node<T>* parent, T* filho);
+        Node<T>* add(Node<T>* parent, T* filho, int cost = COST);
         Node<T>* search(T* element);
         Node<T>* search(int index);
         void remove(Node<T>* folha);
@@ -40,6 +40,8 @@ class Tree{
         int getOrdem() {return this->ordem;};
         Node<T>* getRaiz()  {return this->raiz;};
         int getProfundidade() {return this->profundidade;};
+        double getFatorRamificacao();
+
 
         virtual bool compare(T* a_element, T* b_element) = 0;
 
@@ -100,7 +102,7 @@ void Tree<T>::initTree(Node<T>* node){
  *  @param cost   custo do pai até filho
  */
 template <class T>
-Node<T>* Tree<T>::add(Node<T>* parent, T* filho){
+Node<T>* Tree<T>::add(Node<T>* parent, T* filho, int cost){
      
     if(parent == NULL)
         return NULL;
@@ -122,12 +124,12 @@ Node<T>* Tree<T>::add(Node<T>* parent, T* filho){
     this->indexNode++;
     this->ordem++;
 
-    int profundidade_node = node_filho->getCost();
+    int profundidade_node = node_filho->getProfundidade();
     if(this->profundidade < profundidade_node){
         this->profundidade = profundidade_node;
     }
 
-    Edge<T>* edge = new Edge(parent,node_filho);
+    Edge<T>* edge = new Edge(parent,node_filho,cost);
     edge->prox = parent->edge;
     parent->edge = edge;
     parent->num_filhos++;
@@ -255,6 +257,25 @@ void Tree<T>::removeEdge(Node<T>* node, T* element){
     }
 }
 
+/**
+ * @brief Função que calcula o fator médio de ramificação da árvore
+ * @return Fator médio de ramifação
+*/
+template<class T>
+double Tree<T>::getFatorRamificacao(){
+    double fator = 0;
+    int num_pais = 0;
+    Node<T>* node = this->raiz;
+    while(node != NULL){
+        if(node->num_filhos > 0){
+            fator += node->num_filhos;
+            num_pais++;
+        }
+        node = node->prox;
+    }
+    return fator / num_pais;
+}
+
 template <class T>
 Tree<T>::~Tree(){
     Node<T>* n = this->raiz;
@@ -313,10 +334,7 @@ class Node{
         Node<T>* getProx()   {return this->prox;};
         Edge<T>* getEdge()   {return this->edge;};
         int getCost();
-
-        // void setParent(Node<T>* parent) {this->parent = parent;};
-        // void setProx(Node<T>* prox)     {this->prox = prox;};
-        // void setEdge(Edge<T>* edge)     {this->edge = edge;};
+        int getProfundidade();
 };
 
 /**
@@ -325,31 +343,54 @@ class Node{
 template<class T>
 int Node<T>::getCost(){
     int cost = 0;
+    Node<T>* node = this;
+    Node<T>* pai = this->parent;
+    while(pai != NULL){
+        Edge<T>* edge = pai->edge;
+        while(edge->final != node){
+            edge = edge->prox;
+        }
+        cost += edge->cost;
+        node = pai;
+        pai = pai->parent;
+    }
+    return cost;
+}
+
+/**
+ * @brief Retorna a profundidade do nó na árvore.
+*/
+template<class T>
+int Node<T>::getProfundidade(){
+    int profundidade = 0;
     Node<T>* node = this->parent;
     while(node != NULL){
         node = node->parent;
-        cost++;
+        profundidade++;
     }
-    return cost;
+    return profundidade;
 }
 
 template <class T>
 class Edge{
 
     template <class> friend class Tree;
+    template <class> friend class Node;
 
     private:
 
         Node<T>* init;
         Node<T>* final;
         Edge<T>* prox;
+        int cost;
 
     public:
 
-        Edge(Node<T>* init, Node<T>* final){
+        Edge(Node<T>* init, Node<T>* final, int cost = COST){
             this->init = init;
             this->final = final;
             this->prox = NULL;
+            this->cost = cost;
 
         };
         ~Edge() {};
@@ -357,6 +398,7 @@ class Edge{
         Node<T>* getInit()  {return this->init;};
         Node<T>* getFinal() {return this->final;};
         Edge<T>* getProx()  {return this->prox;};
+        int      getCost()  {return this->cost;};
 
         void setProx(Edge<T>* prox) {this->prox = prox;};
 };
