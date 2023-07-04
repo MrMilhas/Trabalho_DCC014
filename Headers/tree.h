@@ -42,7 +42,8 @@ class Tree{
         int getProfundidade() {return this->profundidade;};
         double getFatorRamificacao();
 
-
+        bool verificaAncestrais(Node<T>* parent, T* element);
+        bool verificaFilhos(Node<T>* parent, T* element);
         virtual bool compare(T* a_element, T* b_element) = 0;
 
     private:
@@ -52,7 +53,6 @@ class Tree{
         int      profundidade;
         int      indexNode;
 
-        bool verificaDescendentes(Node<T>* parent, T* element);
         void initTree(Node<T>* element);
         void mallocEdges(Node<T>* node);
         void removeEdge(Node<T>* node, T* element);
@@ -114,7 +114,7 @@ Node<T>* Tree<T>::add(Node<T>* parent, T* filho, int cost){
     if(parent->parent == NULL && this->raiz != parent)
         return NULL;
 
-    if(this->verificaDescendentes(parent,filho))
+    if(this->verificaAncestrais(parent,filho))
         return NULL;
     
     Node<T>* node_filho = new Node(filho,this->indexNode);
@@ -137,21 +137,40 @@ Node<T>* Tree<T>::add(Node<T>* parent, T* filho, int cost){
     return node_filho;
 }
 
-/** @brief Verifica se element é descendente de parent.
+/** @brief Verifica se element é ancestral de parent.
  * 
- *  @return Se element é descendente de parent retorna true, se não retorna false
+ *  @return Se element é ancestral de parent retorna true, se não retorna false
  * 
- *  @param parent vértice pai de filho
+ *  @param parent vértice pai
  *  @param filho  elemento a ser verificado
  */
 template <class T>
-bool Tree<T>::verificaDescendentes(Node<T>* parent, T* element){
+bool Tree<T>::verificaAncestrais(Node<T>* parent, T* element){
     Node<T>* n = parent;
     while(n != NULL){
         if(this->compare(n->element, element)){
             return true;
         }
         n = n->parent;
+    }
+    return false;
+}
+
+/** @brief Verifica se element já é filho de parent.
+ * 
+ *  @return Se element for filho de parent retorna true, se não retorna false
+ * 
+ *  @param parent vértice pai
+ *  @param filho  elemento a ser verificado
+ */
+template <class T>
+bool Tree<T>::verificaFilhos(Node<T>* parent, T* element){
+    Edge<T>* edge = parent->edge;
+    while(edge != NULL){
+        if(this->compare(edge->final->element, element)){
+            return true;
+        }
+        edge = edge->prox;
     }
     return false;
 }

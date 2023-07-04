@@ -20,17 +20,17 @@
 
 using namespace std;
 
-int main () {
+int main (int argc, char* argv[]) {
     cout << "============================= WELLCOME =============================" << endl;
     cout << "                        ...lendo arquivo...                         " << endl;
     cout << endl;
 
     ifstream arq;
-    arq.open("../Sources/input.txt");
+    arq.open(argv[1]);
 
     int option = 9;
     std::chrono::time_point<std::chrono::system_clock> init, final;
-    vector<Game*> solution_three;
+    vector<Game*> solution_tree;
     bool solution = false;
     Game* puzzle = new Game();
     TreeGame* tree;
@@ -74,49 +74,49 @@ int main () {
                 case 1:
                     init = chrono::high_resolution_clock::now();
                     solution = backtracking(tree);
-                    solution_three = tree->caminho_win();
+                    solution_tree = tree->caminho_win();
                     tree->save("../Output/backtracking.dot");
                     final = chrono::high_resolution_clock::now();
                     break;
                 case 2:
                     init = chrono::high_resolution_clock::now();
                     solution = buscaProfundidade(tree);
-                    solution_three = tree->caminho_win();
+                    solution_tree = tree->caminho_win();
                     tree->save("../Output/buscaProfundidade.dot");
                     final = chrono::high_resolution_clock::now();
                     break;
                 case 3:
                     init = chrono::high_resolution_clock::now();
                     solution = buscaLargura(tree);
-                    solution_three = tree->caminho_win();
+                    solution_tree = tree->caminho_win();
                     tree->save("../Output/buscaLargura.dot");
                     final = chrono::high_resolution_clock::now();
                     break;
                 case 4:
                     init = chrono::high_resolution_clock::now();
                     solution = buscaOrdenada(tree);
-                    solution_three = tree->caminho_win();
+                    solution_tree = tree->caminho_win();
                     tree->save("../Output/buscaOrdenada.dot");
                     final = chrono::high_resolution_clock::now();
                     break;
                 case 5:
                     init = chrono::high_resolution_clock::now();
                     solution = buscaGulosa(tree);
-                    solution_three = tree->caminho_win();
+                    solution_tree = tree->caminho_win();
                     tree->save("../Output/buscaGulosa.dot");
                     final = chrono::high_resolution_clock::now();
                     break;
                 case 6:
                     init = chrono::high_resolution_clock::now();
                     solution = buscaAEstrela(tree);
-                    solution_three = tree->caminho_win();
+                    solution_tree = tree->caminho_win();
                     tree->save("../Output/buscaAEstrela.dot");
                     final = chrono::high_resolution_clock::now();
                     break;
                 case 7:
                     init = chrono::high_resolution_clock::now();
                     solution = buscaIDAEstrela(tree);
-                    solution_three = tree->caminho_win();
+                    solution_tree = tree->caminho_win();
                     tree->save("../Output/buscaIDA*.dot");
                     final = chrono::high_resolution_clock::now();
                     break;
@@ -134,11 +134,11 @@ int main () {
             tempo_exec *= 1e-6;
 
             cout << "Solução:\n";
-            for(Game* game : solution_three){
+            for(Game* game : solution_tree){
                 game->print_board();
             }
             cout << endl;
-            cout << "Profundidade da solução: " << solution_three.size() - 1 << endl;
+            cout << "Profundidade da solução: " << solution_tree.size() - 1 << endl;
             cout << "Custo da soluçao: " << tree->custo_win() << endl;
             cout << "Nós visitados: " << tree->getOrdem() << endl;
             cout << "Nós expandidos: " << tree->nodes_expandidos << endl;
