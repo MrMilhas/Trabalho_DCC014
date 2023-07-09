@@ -29,11 +29,10 @@ Neste jogo, define-se j sendo a posição da ficha i. As fichas se limitam em do
 
 ## Como Compilar?
 
-```
-
-```
+Para compilar no linux, abra o diretório raiz do projeto no terminal e compile com:
+ g++ -o exec Sources/*.cpp
 
 ## Como rodar?
 
-```
-```
+Para rodar o programa use:
+./exec "endereço do arquivo de entrada"

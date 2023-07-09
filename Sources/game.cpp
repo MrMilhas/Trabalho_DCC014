@@ -76,7 +76,6 @@ Game *Game::build_child(){
         aux->board[i] = this->board[i];
         aux->board_win[i] = this->board_win[i];
     }
-
     return aux;
 }
 
@@ -131,11 +130,31 @@ bool Game::equals(Game *g){
 
 int Game::calc_heuristic(){
     int cost = 0;
+    Game* child = this->build_child();
 
-    for(int i=0; i<this->size_board; i++){
-        if(this->board[i] != this->board_win[i]){
+    int indice_vazio;
+    for(int i = 0; i < this->size_board; i++){
+        if(this->board[i] == '-'){
+            indice_vazio = i;
+            break;
+        }
+    }
+    if(indice_vazio != this->n_pieces){
+        child->move(indice_vazio,this->n_pieces);
+        cost++;
+    }
+
+    for(int i = this->size_board - 1; i > this->size_board/2; i--){
+        if(child->board[i] != child->board_win[i]){
             cost++;
         }
     }
+
+    delete child;
+    // for(int i=0; i<this->size_board; i++){
+    //     if(this->board[i] != this->board_win[i]){
+    //         cost++;
+    //     }
+    // }
     return cost;
 }

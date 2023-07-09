@@ -120,6 +120,7 @@ Node<T>* Tree<T>::add(Node<T>* parent, T* filho, int cost){
     Node<T>* node_filho = new Node(filho,this->indexNode);
     node_filho->parent = parent;
     node_filho->prox = parent->prox;
+    node_filho->cost = parent->cost + cost;
     parent->prox = node_filho;
     this->indexNode++;
     this->ordem++;
@@ -330,6 +331,7 @@ class Node{
         T* element;
         int index;
         int num_filhos;
+        int cost; //Custo da raiz até o vertice
         Node<T>* parent;
         Node<T>* prox;
         Edge<T>* edge;
@@ -340,41 +342,44 @@ class Node{
             this->element = element;
             this->index = index;
             this->num_filhos = 0;
+            this->cost = 0;
             this->parent = NULL;
             this->prox = NULL;
             this->edge = NULL;
         };
         ~Node() {};
 
-        T* getElement()       {return this->element;};
+        T* getElement()      {return this->element;};
         int getIndex()       {return this->index;};
         int getNumFilhos()   {return this->num_filhos;};
         Node<T>* getParent() {return this->parent;};
         Node<T>* getProx()   {return this->prox;};
         Edge<T>* getEdge()   {return this->edge;};
-        int getCost();
+        int getCost()        {return this->cost;};  
         int getProfundidade();
+
+        void setCost(int cost) {this->cost = cost;};
 };
 
 /**
  * @brief Retorna o custo do caminho da raiz até o nó.
 */
-template<class T>
-int Node<T>::getCost(){
-    int cost = 0;
-    Node<T>* node = this;
-    Node<T>* pai = this->parent;
-    while(pai != NULL){
-        Edge<T>* edge = pai->edge;
-        while(edge->final != node){
-            edge = edge->prox;
-        }
-        cost += edge->cost;
-        node = pai;
-        pai = pai->parent;
-    }
-    return cost;
-}
+// template<class T>
+// int Node<T>::getCost(){
+//     int cost = 0;
+//     Node<T>* node = this;
+//     Node<T>* pai = this->parent;
+//     while(pai != NULL){
+//         Edge<T>* edge = pai->edge;
+//         while(edge->final != node){
+//             edge = edge->prox;
+//         }
+//         cost += edge->cost;
+//         node = pai;
+//         pai = pai->parent;
+//     }
+//     return cost;
+// }
 
 /**
  * @brief Retorna a profundidade do nó na árvore.

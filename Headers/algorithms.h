@@ -21,6 +21,14 @@ int calc_func(Node<Game>* node);
 Game* escolhe_filho(TreeGame* tree, Node<Game>* node);
 Game* escolhe_filho_nao_repetido(TreeGame* tree, Node<Game>* node);
 
+Node<Game>* searchList(std::list<Node<Game>*> list, Game* game){
+    for(auto open : list){
+        if(open->getElement()->equals(game)){
+            return open;
+        }
+    }
+    return NULL;
+}
 
 // Algoritmos de busca
 bool backtracking (TreeGame* tree){
@@ -101,7 +109,7 @@ bool buscaProfundidade(TreeGame* tree){
                 Game* child = game->build_child();
                 child->move(get<0>(move),get<1>(move));
                 Node<Game>* search = tree->search(child);
-                if(search == NULL){  // Verifica se o vértice já está na arvore                    
+                if(search == NULL){
                     abertos.push_front(tree->add(node,child));
                 }else{
                     delete child;
@@ -138,7 +146,7 @@ bool buscaOrdenada(TreeGame *tree){
         
         Game *game = node->getElement();
         if(game->verify_win()){
-            return true;
+            sucesso = true;
         }
         else{
             std::vector<std::pair<int,int>> possible_moves = game->possible_moves();
@@ -172,7 +180,7 @@ bool buscaGulosa(TreeGame *tree){
 
         long int inf = INT_MAX;  // Variável auxiliar para encontrar o menor custo na lista de abertos;
 
-        // Obtem o nó com menor custo total da lista de abertos;
+        // Obtem o nó com menor valor heurístico da lista de abertos;
         for(auto open : abertos){
             int heuristica = open->getElement()->calc_heuristic();
             if(heuristica < inf){
@@ -183,8 +191,7 @@ bool buscaGulosa(TreeGame *tree){
 
         Game* game = node->getElement();
         if(game->verify_win()){
-            return true;
-        }
+            sucesso = true;        }
         else{
             std::vector<std::pair<int,int>> possible_moves = game->possible_moves();
             for(auto move : possible_moves){
@@ -208,8 +215,8 @@ bool buscaGulosa(TreeGame *tree){
 bool buscaAEstrela(TreeGame *tree){
     std::list<Node<Game>*> abertos = {tree->getRaiz()};
     std::list<Node<Game>*> fechados;
-
     Node<Game>* node;
+
     bool sucesso = false;
     while(!sucesso){
         if(abertos.empty())
@@ -219,16 +226,15 @@ bool buscaAEstrela(TreeGame *tree){
 
         // Obtem o nó com menor custo total da lista de abertos;
         for(auto open : abertos){
-            int func_avaliacao = open->getElement()->calc_heuristic() + open->getCost();
-            if(func_avaliacao < inf){
-                inf = func_avaliacao;
+            if(open->getElement()->cost < inf){
+                inf = open->getElement()->cost;
                 node = open;
             }
         }
 
         Game* game = node->getElement();
         if(game->verify_win()){
-            return true;
+            sucesso = true;
         }
         else{
             std::vector<std::pair<int,int>> possible_moves = game->possible_moves();
@@ -236,13 +242,26 @@ bool buscaAEstrela(TreeGame *tree){
                 Game* child = game->build_child();
                 child->move(get<0>(move),get<1>(move));
                 Node<Game>* search = tree->search(child);
-                if(search == NULL){  // Verifica se o vértice já está na arvore                    
-                    abertos.push_back(tree->add(node,child));
+                if(search == NULL){
+                    Node<Game>* node_child = tree->add(node,child);
+                    child->cost = child->calc_heuristic() + node_child->getCost();
+                    abertos.push_back(node_child);  
                 }else{
-                    delete child;
+                    if(searchList(fechados,child) != NULL || tree->verificaAncestrais(node,child)){
+                        delete child;
+                    }else{
+                        int func_child = node->getCost() + 1 + child->calc_heuristic();
+                        if(func_child < search->getElement()->cost){
+                            Node<Game>* node_child = tree->add(node,child);
+                            child->cost = child->calc_heuristic() + node_child->getCost();
+                            abertos.push_back(node_child);  
+                            abertos.remove(search);
+                        } else{
+                            delete child;
+                        }
+                    }
                 }
             }
-            fechados.push_back(node);
             tree->nodes_expandidos++;
             abertos.remove(node);
         }
@@ -296,7 +315,7 @@ bool buscaIDAEstrela(TreeGame* tree){
     return true;
 }
 
-
+//Implementação funções auxiliares
 int calc_func(Node<Game>* node){
    Game* game = node->getElement();
    return node->getCost() + game->calc_heuristic();
@@ -330,6 +349,7 @@ Game* escolhe_filho_nao_repetido(TreeGame* tree, Node<Game>* node){
         }
         child->move(get<0>(move),get<1>(move));
     }
+    delete child;
     return NULL;
 }
 

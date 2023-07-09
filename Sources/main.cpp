@@ -75,49 +75,49 @@ int main (int argc, char* argv[]) {
                     init = chrono::high_resolution_clock::now();
                     solution = backtracking(tree);
                     solution_tree = tree->caminho_win();
-                    tree->save("../Output/backtracking.dot");
+                    tree->save("Output/backtracking.dot");
                     final = chrono::high_resolution_clock::now();
                     break;
                 case 2:
                     init = chrono::high_resolution_clock::now();
                     solution = buscaProfundidade(tree);
                     solution_tree = tree->caminho_win();
-                    tree->save("../Output/buscaProfundidade.dot");
+                    tree->save("Output/buscaProfundidade.dot");
                     final = chrono::high_resolution_clock::now();
                     break;
                 case 3:
                     init = chrono::high_resolution_clock::now();
                     solution = buscaLargura(tree);
                     solution_tree = tree->caminho_win();
-                    tree->save("../Output/buscaLargura.dot");
+                    tree->save("Output/buscaLargura.dot");
                     final = chrono::high_resolution_clock::now();
                     break;
                 case 4:
                     init = chrono::high_resolution_clock::now();
                     solution = buscaOrdenada(tree);
                     solution_tree = tree->caminho_win();
-                    tree->save("../Output/buscaOrdenada.dot");
+                    tree->save("Output/buscaOrdenada.dot");
                     final = chrono::high_resolution_clock::now();
                     break;
                 case 5:
                     init = chrono::high_resolution_clock::now();
                     solution = buscaGulosa(tree);
                     solution_tree = tree->caminho_win();
-                    tree->save("../Output/buscaGulosa.dot");
+                    tree->save("Output/buscaGulosa.dot");
                     final = chrono::high_resolution_clock::now();
                     break;
                 case 6:
                     init = chrono::high_resolution_clock::now();
                     solution = buscaAEstrela(tree);
                     solution_tree = tree->caminho_win();
-                    tree->save("../Output/buscaAEstrela.dot");
+                    tree->save("Output/buscaAEstrela.dot");
                     final = chrono::high_resolution_clock::now();
                     break;
                 case 7:
                     init = chrono::high_resolution_clock::now();
                     solution = buscaIDAEstrela(tree);
                     solution_tree = tree->caminho_win();
-                    tree->save("../Output/buscaIDA*.dot");
+                    tree->save("Output/buscaIDA*.dot");
                     final = chrono::high_resolution_clock::now();
                     break;
                 case 0:
@@ -127,6 +127,7 @@ int main (int argc, char* argv[]) {
                 default:
                     cout << "Opcao invalida." << endl;
                     cout << "-------------------------------" << endl;
+                    delete tree;
                     continue;
             }
 
@@ -147,8 +148,9 @@ int main (int argc, char* argv[]) {
             cout << endl;
             delete tree;
         }
+        delete tree;
     }
-    arq.close();
     delete puzzle;
+    arq.close();
     return 0;
 }
